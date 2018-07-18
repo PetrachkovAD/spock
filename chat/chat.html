@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Chat</title>
+</head>
+<body>
+	<form id="chat">
+		<input type="text" name="message">
+		<input type="submit">
+	</form>
+	<div id="messages"></div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io();
+
+		chat.onsubmit = function(event) {
+			var message = this.message.value;
+			this.message.value = '';
+
+			socket.emit('message', message, function() {
+				showMessage(message);
+			});
+			
+
+			return false; //Вспомнить про отмену дефолтного поведения и всплывания
+		}
+
+		socket.on('message', function(text) {
+			showMessage(text);
+		});
+
+		function showMessage(message) {
+			var messageElem = document.createElement('div');
+			messageElem.appendChild(document.createTextNode(message));
+			messages.appendChild(messageElem);
+		}
+	</script>
+</body>
+</html>
